@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.osrs.dao.CourseMapper">
+
+    <resultMap id="BaseResultMap" type="com.osrs.entity.Course">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="courseName" column="CourseName" jdbcType="VARCHAR"/>
+            <result property="university" column="University" jdbcType="VARCHAR"/>
+            <result property="difficultyLevel" column="DifficultyLevel" jdbcType="VARCHAR"/>
+            <result property="courseRating" column="CourseRating" jdbcType="VARCHAR"/>
+            <result property="courseUrl" column="CourseURL" jdbcType="VARCHAR"/>
+            <result property="courseDescription" column="CourseDescription" jdbcType="VARCHAR"/>
+            <result property="skills" column="Skills" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,CourseName,University,
+        DifficultyLevel,CourseRating,CourseURL,
+        CourseDescription,Skills
+    </sql>
+
+    <select id="selectList" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM course
+    </select>
+</mapper>
