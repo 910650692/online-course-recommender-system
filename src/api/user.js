@@ -2,23 +2,38 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/vue-admin-template/user/login',
+    url: '/user/login',
     method: 'post',
-    data
+    data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }
 
 export function getInfo(token) {
   return request({
-    url: '/vue-admin-template/user/info',
+    url: '/user/info',
     method: 'get',
     params: { token }
   })
 }
 
-export function logout() {
+export function logout(token) {
   return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
+    url: '/user/logout',
+    method: 'post',
+    params: { token }
+  })
+}
+
+export function register(data) {
+  return request({
+    url: '/user/register',
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }
