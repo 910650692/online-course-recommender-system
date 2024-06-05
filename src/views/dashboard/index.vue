@@ -14,9 +14,43 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="Course Title">
+      <el-table-column label="Course Name">
         <template slot-scope="scope">
           {{ scope.row.courseName }}
+        </template>
+      </el-table-column>
+      <el-table-column label="University">
+        <template slot-scope="scope">
+          {{ scope.row.university }}
+        </template>
+      </el-table-column>
+      <el-table-column label="Difficulty Level">
+        <template slot-scope="scope">
+          {{ scope.row.difficultyLevel }}
+        </template>
+      </el-table-column>
+      <el-table-column label="Course Rating" width="80">
+        <template slot-scope="scope">
+          {{ scope.row.courseRating }}
+        </template>
+      </el-table-column>
+      <el-table-column label="Course URL">
+        <template slot-scope="scope">
+          <a :href="scope.row.courseUrl" target="_blank">
+            {{ scope.row.courseUrl }}
+          </a>
+        </template>
+      </el-table-column>
+      <el-table-column label="Course Description">
+        <template slot-scope="scope">
+          <div class="scrollable-content">
+            {{ scope.row.courseDescription }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="Skills">
+        <template slot-scope="scope">
+          {{ scope.row.skills }}
         </template>
       </el-table-column>
     </el-table>
@@ -28,8 +62,7 @@
       :total="total"
       @current-change="handlePageChange"
     />
-    <!-- <Table /> -->
-    <div class="dashboard-text">name: {{ name }}</div>
+    <pie-chart />
   </div>
 </template>
 
@@ -37,9 +70,10 @@
 import { mapGetters } from 'vuex'
 import PanelGroup from './PanelGroup.vue'
 import { getCourseList } from '@/api/table'
+import PieChart from '../chart/PieChart.vue'
 export default {
   name: 'Dashboard',
-  components: { PanelGroup },
+  components: { PanelGroup, PieChart },
   data() {
     return {
       list: [], // 用于保存 getList 函数的返回值
@@ -95,5 +129,11 @@ export default {
     font-size: 30px;
     line-height: 46px;
   }
+}
+</style>
+<style scoped>
+.scrollable-content {
+  max-height: 100px;
+  overflow-y: auto;
 }
 </style>

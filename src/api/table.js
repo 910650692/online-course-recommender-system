@@ -16,3 +16,24 @@ export function getCourseList(params) {
     params
   })
 }
+
+export function getCourseDifficultyCounts() {
+  return request({
+    url: '/course/countByDifficultyLevel',
+    method: 'get'
+  })
+}
+export function editCourse(data) {
+  return request({
+    url: '/course/update',
+    method: 'post',
+    data
+  })
+}
+export function deleteCourse(id) {
+  return request({
+    url: '/course/delete',
+    method: 'post',
+    params: { id }
+  })
+}
