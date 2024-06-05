@@ -25,4 +25,10 @@
         SELECT <include refid="Base_Column_List" />
         FROM course
     </select>
+
+    <select id="countByDifficultyLevel" resultType="map">
+        SELECT DifficultyLevel, COUNT(*) as count
+        FROM course
+        GROUP BY DifficultyLevel
+    </select>
 </mapper>

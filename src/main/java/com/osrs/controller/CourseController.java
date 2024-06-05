@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/course")
@@ -28,6 +29,16 @@ public class CourseController {
     public JsonResponse list(){
         List<Course> courseList = courseService.getCourseList();
         return new JsonResponse(200, "success", courseList);
+    }
+
+    @RequestMapping("/countByDifficultyLevel")
+    public JsonResponse countByDifficultyLevel(){
+        Map<String, Integer> data = courseService.countByDifficultyLevel();
+
+        if (data == null)
+            return new JsonResponse(400, "failed", null);
+        else
+            return new JsonResponse(200, "success", courseService.countByDifficultyLevel());
     }
 
 }
