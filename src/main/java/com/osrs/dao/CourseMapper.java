@@ -20,6 +20,12 @@ public interface CourseMapper extends BaseMapper<Course> {
     List<Course> selectList();
     @MapKey("DifficultyLevel")
     List<Map<String,Object>> countByDifficultyLevel();
+
+    int updateCourse(Course course);
+
+    int deleteCourse(Integer id);
+
+    int insertCourse(Course course);
 }
 
 

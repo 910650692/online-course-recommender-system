@@ -31,4 +31,24 @@
         FROM course
         GROUP BY DifficultyLevel
     </select>
+
+    <update id="updateCourse" parameterType="com.osrs.entity.Course">
+        UPDATE course
+        SET CourseName = #{courseName},
+            University = #{university},
+            DifficultyLevel = #{difficultyLevel},
+            CourseRating = #{courseRating},
+            CourseURL = #{courseUrl},
+            CourseDescription = #{courseDescription},
+            Skills = #{skills}
+        WHERE id = #{id}
+    </update>
+    <delete id="deleteCourse" parameterType="int">
+        DELETE FROM course
+        WHERE id = #{id}
+    </delete>
+<insert id="insertCourse" parameterType="com.osrs.entity.Course">
+        INSERT INTO course (CourseName, University, DifficultyLevel, CourseRating, CourseURL, CourseDescription, Skills)
+        VALUES (#{courseName}, #{university}, #{difficultyLevel}, #{courseRating}, #{courseUrl}, #{courseDescription}, #{skills})
+    </insert>
 </mapper>

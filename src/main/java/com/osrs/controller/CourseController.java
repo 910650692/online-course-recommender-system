@@ -5,9 +5,7 @@ import com.osrs.common.JsonResponse;
 import com.osrs.entity.Course;
 import com.osrs.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -39,6 +37,27 @@ public class CourseController {
             return new JsonResponse(400, "failed", null);
         else
             return new JsonResponse(200, "success", courseService.countByDifficultyLevel());
+    }
+
+    @RequestMapping("/update")
+    public JsonResponse update(@RequestBody Course course){
+        int result = courseService.updateCourse(course);
+        if(result == 1){
+            return new JsonResponse(200, "success", null);
+        }else{
+            return new JsonResponse(400, "failed", null);
+        }
+    }
+    @RequestMapping("/delete")
+    public JsonResponse delete(@RequestParam Integer id){
+        System.out.println("Deleting course with id: " + id);
+        int result = courseService.deleteCourse(id);
+        System.out.println("Delete result: " + result);
+        if(result == 1){
+            return new JsonResponse(200, "success", null);
+        }else{
+            return new JsonResponse(400, "failed", null);
+        }
     }
 
 }

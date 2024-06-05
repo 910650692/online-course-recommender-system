@@ -38,6 +38,17 @@ public class CourseServiceImpl implements CourseService{
 //        System.out.println(result);
         return result;
     }
+    @Override
+    public int updateCourse(Course course) {
+        return courseMapper.updateCourse(course);
+    }
+    @Override
+    public int deleteCourse(Integer id) {
+        System.out.println("Service Deleting course with id: " + id);
+        int result = courseMapper.deleteCourse(id);
+        System.out.println("Service Delete result: " + result);
+        return result;
+    }
 }
 
 

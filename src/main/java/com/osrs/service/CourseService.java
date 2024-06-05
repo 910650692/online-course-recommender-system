@@ -15,4 +15,7 @@ public interface CourseService{
     List<Course> getCourseList();
 
     Map<String,Integer> countByDifficultyLevel();
+
+    int updateCourse(Course course);
+    int deleteCourse(Integer id);
 }
