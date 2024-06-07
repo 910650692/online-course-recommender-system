@@ -12,7 +12,7 @@
         :collapse-transition="false"
         mode="vertical"
       >
-        <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
+        <sidebar-item v-for="route in sidebarRoutes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
   </div>
@@ -32,6 +32,14 @@ export default {
     ]),
     routes() {
       return this.$router.options.routes
+    },
+    sidebarRoutes() {
+      const userRole = this.$store.getters.role // 获取用户的角色
+      console.log('sidebar role : ' + userRole)
+      return this.$router.options.routes.filter(route => {
+      // 如果路由没有 `meta.roles` 属性，或者用户的角色在 `meta.roles` 数组中，那么该路由应该显示在侧边栏中
+        return !route.meta || !route.meta.roles || route.meta.roles.includes(userRole)
+      })
     },
     activeMenu() {
       const route = this.$route

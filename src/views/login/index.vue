@@ -143,7 +143,11 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
+            const role = this.$store.state.role
+            // 根据角色设置重定向的路径
+            const redirectPath = role === 'admin' ? '/dashboard' : '/index/index'
+            console.log('redirectPath', redirectPath)
+            this.$router.push({ path: this.redirect || redirectPath })
             this.loading = false
           }).catch(() => {
             this.loading = false

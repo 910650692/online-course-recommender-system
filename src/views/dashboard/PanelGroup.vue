@@ -7,9 +7,9 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            New Visits
+            Total Users
           </div>
-          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="totalUsers" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -20,9 +20,9 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Messages
+            Total Courses
           </div>
-          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="totalCourses" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -57,14 +57,33 @@
 
 <script>
 import CountTo from 'vue-count-to'
-
+import { getTotalUsers, getTotalCourses } from '@/api/table'
 export default {
   components: {
     CountTo
   },
+  data() {
+    return {
+      totalUsers: 0,
+      totalCourses: 0
+    }
+  },
+  created() {
+    this.fetchData()
+  },
   methods: {
     handleSetLineChartData(type) {
       this.$emit('handleSetLineChartData', type)
+    },
+    fetchData() {
+      Promise.all([getTotalUsers(), getTotalCourses()])
+        .then(([userResponse, courseResponse]) => {
+          this.totalUsers = userResponse.data
+          this.totalCourses = courseResponse.data
+        })
+        .catch(error => {
+          console.error(error)
+        })
     }
   }
 }

@@ -37,3 +37,24 @@ export function register(data) {
     }
   })
 }
+export function collect(userId, courseId) {
+  return request({
+    url: '/user/collect',
+    method: 'post',
+    params: { userId, courseId }
+  })
+}
+export function cancelCollect(userId, courseId) {
+  return request({
+    url: '/user/uncollect',
+    method: 'post',
+    params: { userId, courseId }
+  })
+}
+export function getCollectList(userId) {
+  return request({
+    url: '/user/getFavoriteList',
+    method: 'get',
+    params: { userId }
+  })
+}

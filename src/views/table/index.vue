@@ -1,10 +1,6 @@
 <template>
   <div class="app-container">
-    <el-button @click="handleAdd" type="primary" style="margin-bottom: 20px;">Add</el-button>
-    <el-table :data="paginatedList" style="width: 100%">
-      <!-- 其他代码 -->
-
-    </el-table>
+    <h1 class="dashboard-text">Welcome, {{ name }}</h1>
     <el-table
       v-loading="listLoading"
       :data="paginatedList"
@@ -35,7 +31,7 @@
       </el-table-column>
       <el-table-column label="Course Rating" width="80">
         <template slot-scope="scope">
-          {{ scope.row.courseRating }}
+          {{ formatRating(scope.row.courseRating) }}
         </template>
       </el-table-column>
       <el-table-column label="Course URL">
@@ -45,13 +41,13 @@
           </a>
         </template>
       </el-table-column>
-      <el-table-column label="Course Description">
+      <!-- <el-table-column label="Course Description">
         <template slot-scope="scope">
           <div class="scrollable-content">
             {{ scope.row.courseDescription }}
           </div>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="Skills">
         <template slot-scope="scope">
           <div class="scrollable-content">
@@ -61,8 +57,11 @@
       </el-table-column>
       <el-table-column label="Operations">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+          <el-button v-if="role === 'admin'" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+          <el-button v-if="role === 'admin'" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+          <el-button v-if="role === 'user' && collectedCourseIds.has(scope.row.id)" size="mini" type="danger" @click="handleUnCollect(scope.$index, scope.row)">UnCollect</el-button>
+          <el-button v-else-if="role === 'user' && !collectedCourseIds.has(scope.row.id)" size="mini" type="primary" @click="handleCollect(scope.$index, scope.row)">Collect</el-button>
+          <el-button v-if="role === 'user'" size="mini" type="info" @click="openRatingDialog(scope.$index, scope.row)">Rating</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -96,6 +95,17 @@
         <el-button type="primary" @click="submitForm">Submit</el-button>
       </span>
     </el-dialog>
+    <!-- 评分对话 -->
+    <el-dialog :visible.sync="ratingDialogVisible" title="Rate Course">
+      <el-rate
+        v-model="rating"
+        :colors="colors"
+      />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="ratingDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="submitRating">Submit</el-button>
+      </span>
+    </el-dialog>
     <el-pagination
       background
       :current-page="currentPage"
@@ -108,7 +118,9 @@
 </template>
 
 <script>
-import { getCourseList, editCourse, deleteCourse } from '@/api/table'
+import { getCourseList, editCourse, deleteCourse, addCourse, courseRating } from '@/api/table'
+import { collect, cancelCollect, getCollectList } from '@/api/user'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -129,11 +141,23 @@ export default {
         courseDescription: '',
         skills: ''
       },
-      currentRow: null
+      currentRow: null,
+      ratingDialogVisible: false,
+      rating: null,
+      colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+      courses: [], // 用于保存已收藏的课程
+      collectedCourseIds: new Set() // 用于保存已收藏的课程的 ID
     }
+  },
+  computed: {
+    ...mapGetters([
+      'name',
+      'role'
+    ])
   },
   created() {
     this.fetchData()
+    this.fetchCollectList()
   },
   methods: {
     fetchData() {
@@ -148,6 +172,25 @@ export default {
         this.listLoading = false
         this.$message.error('Failed to fetch courses')
       })
+    },
+    async fetchCollectList() {
+      try {
+        const userId = this.$store.getters.userId // 假设 userId 存储在 Vuex store 的 getters 中
+        const { data } = await getCollectList(userId)
+        console.log('Collected courses:', data)
+        // 检查 data 是否为非空数组
+        if (Array.isArray(data)) {
+          this.collectedCourseIds = new Set(data.map(course => course.id));
+        } else {
+          this.collectedCourseIds = new Set(); // 确保是空的 Set，避免错误
+        }
+        this.collectedCourseIds = new Set(data.map(course => course.id))
+        this.courses.forEach(course => {
+          course.isCollected = this.collectedCourseIds.has(course.id)
+        })
+      } catch (error) {
+        console.error('Failed to fetch collect list', error)
+      }
     },
     paginate() {
       const start = (this.currentPage - 1) * this.pageSize
@@ -209,10 +252,85 @@ export default {
     handleAdd() {
       this.dialogVisible = true
       this.form = {
-        name: '',
-        description: ''
-        // 其他字段
+        id: '',
+        courseName: '',
+        university: '',
+        difficultyLevel: '',
+        courseRating: '',
+        courseUrl: '',
+        courseDescription: '',
+        skills: ''
       }
+      addCourse(this.form)
+        .then(response => {
+          this.dialogVisible = false
+          this.$message({
+            message: 'Course updated successfully',
+            type: 'success'
+          })
+          this.fetchData()
+        })
+        .catch(() => {
+          this.$message({
+            message: 'Failed to update course',
+            type: 'error'
+          })
+        })
+    },
+    openRatingDialog(index, row) {
+      this.currentRow = row
+      this.ratingDialogVisible = true
+    },
+    submitRating() {
+      const userId = this.$store.getters.userId
+      courseRating(userId, this.currentRow.id, this.rating)
+        .then(() => {
+          this.$message({
+            message: 'Course rated successfully',
+            type: 'success'
+          })
+          this.fetchData()
+          this.ratingDialogVisible = false
+        })
+        .catch(() => {
+          this.$message({
+            message: 'Failed to rate course',
+            type: 'error'
+          })
+        })
+    },
+    formatRating(rating) {
+      return parseFloat(rating).toFixed(1)
+    },
+    async handleCollect(index, row) {
+      try {
+        await collect(this.$store.getters.userId, row.id)
+        this.$message({
+          message: 'Course collected successfully',
+          type: 'success'
+        })
+      } catch (error) {
+        this.$message({
+          message: 'Failed to collect course',
+          type: 'error'
+        })
+      }
+      await this.fetchCollectList()
+    },
+    async handleUnCollect(index, row) {
+      try {
+        await cancelCollect(this.$store.getters.userId, row.id)
+        this.$message({
+          message: 'Course uncollected successfully',
+          type: 'success'
+        })
+      } catch (error) {
+        this.$message({
+          message: 'Failed to uncollect course',
+          type: 'error'
+        })
+      }
+      await this.fetchCollectList()
     }
   }
 }

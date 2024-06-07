@@ -6,7 +6,9 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    role: '',
+    userId: ''
   }
 }
 
@@ -24,6 +26,12 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ROLE: (state, role) => {
+    state.role = role
+  },
+  SET_USERID: (state, userId) => {
+    state.userId = userId
   }
 }
 
@@ -53,10 +61,12 @@ const actions = {
           return reject('Verification failed, please Login again.')
         }
 
-        const { username, avatar } = data
-        console.log('2:' + avatar)
+        const { username, avatar, role, id } = data
+        console.log('2:' + role)
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
+        commit('SET_ROLE', role)
+        commit('SET_USERID', id)
         resolve(data)
       }).catch(error => {
         reject(error)

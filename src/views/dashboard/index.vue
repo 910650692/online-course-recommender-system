@@ -1,7 +1,8 @@
 <template>
   <div class="dashboard-container">
+    <h1 class="dashboard-text">Welcome, {{ name }}</h1>
     <panel-group />
-    <el-table
+    <!-- <el-table
       v-loading="listLoading"
       :data="paginatedList"
       element-loading-text="Loading"
@@ -61,7 +62,7 @@
       layout="total, prev, pager, next, jumper"
       :total="total"
       @current-change="handlePageChange"
-    />
+    /> -->
     <pie-chart />
   </div>
 </template>

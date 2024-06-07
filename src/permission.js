@@ -23,7 +23,13 @@ router.beforeEach(async(to, from, next) => {
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
-      next({ path: '/' })
+      const userRole = store.getters.role // get user role from your Vuex store
+      console.log('role : ' + userRole)
+      if (userRole === 'admin') {
+        next('/') // if user role is admin, redirect to dashboard page
+      } else {
+        next('/index/index') // if user role is user, redirect to index page
+      }
       NProgress.done()
     } else {
       const hasGetUserInfo = store.getters.name
@@ -33,7 +39,7 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           await store.dispatch('user/getInfo')
-
+          // check user role
           next()
         } catch (error) {
           // remove token and go to login page to re-login
@@ -56,6 +62,7 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     }
   }
+
 })
 
 router.afterEach(() => {

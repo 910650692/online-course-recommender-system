@@ -37,3 +37,29 @@ export function deleteCourse(id) {
     params: { id }
   })
 }
+export function addCourse(data) {
+  return request({
+    url: '/course/add',
+    method: 'post',
+    data
+  })
+}
+export function getTotalCourses() {
+  return request({
+    url: '/course/total',
+    method: 'get'
+  })
+}
+export function getTotalUsers() {
+  return request({
+    url: '/user/total',
+    method: 'get'
+  })
+}
+export function courseRating(userId, courseId, rating) {
+  return request({
+    url: '/course/rating',
+    method: 'post',
+    params: { userId, courseId, rating }
+  })
+}

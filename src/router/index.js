@@ -42,31 +42,44 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-
+  {
+    path: '/index',
+    component: Layout,
+    meta: { roles: ['user'] },
+    children: [
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('@/views/table/index'),
+        meta: { title: 'Index', icon: 'dashboard', roles: ['user'] }
+      }
+    ]
+  },
   {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    meta: { roles: ['admin'] },
     children: [{
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: 'Dashboard', icon: 'dashboard', roles: ['admin'] }
     }]
   },
 
   {
-    path: '/example',
+    path: '/course',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
+    redirect: '/course/table',
+    name: 'Course',
     meta: { title: 'Course Management', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
+        path: 'course',
+        name: 'course Table',
         component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        meta: { title: 'Course Table', icon: 'table' }
       },
       {
         path: 'tree',
