@@ -2,12 +2,14 @@ package com.osrs.controller;
 
 import com.osrs.common.JsonResponse;
 import com.osrs.common.JwtUtil;
+import com.osrs.entity.Course;
 import com.osrs.entity.User;
 import com.osrs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -72,6 +74,39 @@ public class UserController {
             return new JsonResponse(200, "Registration successful", null);
         }else{
             return new JsonResponse(400, "Registration failed", null);
+        }
+    }
+
+    @RequestMapping("total")
+    public JsonResponse total(){
+        int totalUser = userService.countTotalUser();
+        return new JsonResponse(200, "success", totalUser);
+    }
+    @RequestMapping("/collect")
+    public JsonResponse collect(@RequestParam Integer userId, @RequestParam Integer courseId){
+        int result = userService.addCourseToFavorite(userId, courseId);
+        if(result == 1){
+            return new JsonResponse(200, "Collect success", result);
+        }else{
+            return new JsonResponse(400, "Collect failed", result);
+        }
+    }
+    @RequestMapping("/uncollect")
+    public JsonResponse uncollect(@RequestParam Integer userId, @RequestParam Integer courseId){
+        int result = userService.removeCourseFromFavorite(userId, courseId);
+        if(result == 1){
+            return new JsonResponse(200, "Uncollect success", result);
+        }else{
+            return new JsonResponse(400, "Uncollect failed", result);
+        }
+    }
+    @RequestMapping("/getFavoriteList")
+    public JsonResponse getFavoriteList(@RequestParam Integer userId) {
+        List<Course> favoriteList = userService.getFavoriteCoursesList(userId);
+        if (favoriteList == null || favoriteList.size() == 0) {
+            return new JsonResponse(200, "Favorite list is null", null);
+        } else {
+            return new JsonResponse(200, "success", favoriteList);
         }
     }
 }

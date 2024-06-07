@@ -26,6 +26,18 @@ public interface CourseMapper extends BaseMapper<Course> {
     int deleteCourse(Integer id);
 
     int insertCourse(Course course);
+
+    int countTotalCourse();
+
+    Double getAverageRating(Integer courseId);
+
+    int updateCourseRating(Integer courseId, Double rating);
+    Double getUserRating(Integer userId, Integer courseId);
+    int insertUserRating(Integer userId,Integer courseId, Double rating);
+
+    int updateUserRating(Integer userId,Integer courseId, Double rating);
+
+
 }
 
 

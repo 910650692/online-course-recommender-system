@@ -1,8 +1,11 @@
 package com.osrs.dao;
 
+import com.osrs.entity.Course;
 import com.osrs.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
 * @author jacky
@@ -15,6 +18,12 @@ public interface UserMapper extends BaseMapper<User> {
         User selectByUsername(String username);
 
         int insertUser(User user);
+        int countTotalUser();
+        int addCourseToFavorite(Integer userId, Integer courseId);
+
+        int removeCourseFromFavorite(Integer userId, Integer courseId);
+
+        List<Course> selectFavoriteCoursesList(Integer userId);
 }
 
 

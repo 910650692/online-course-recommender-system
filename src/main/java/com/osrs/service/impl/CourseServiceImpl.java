@@ -49,6 +49,51 @@ public class CourseServiceImpl implements CourseService{
         System.out.println("Service Delete result: " + result);
         return result;
     }
+    @Override
+    public int insertCourse(Course course) {
+        return courseMapper.insertCourse(course);
+    }
+
+    @Override
+    public int countTotalCourse() {
+        return courseMapper.countTotalCourse();
+    }
+    @Override
+    public Double getAverageRating(Integer courseId) {
+        return courseMapper.getAverageRating(courseId);
+    }
+
+    @Override
+    public int insertUserRating(Integer userId, Integer courseId, Double rating) {
+        return courseMapper.insertUserRating(userId, courseId, rating);
+    }
+
+    @Override
+    public int updateUserRating(Integer userId, Integer courseId, Double rating) {
+        return courseMapper.updateUserRating(userId, courseId, rating);
+    }
+
+    @Override
+    public Double getUserRating(Integer userId, Integer courseId) {
+        return courseMapper.getUserRating(userId, courseId);
+    }
+
+    @Override
+    public int RateCourse(Integer userId, Integer courseId, Double rating) {
+        Double existingRating = courseMapper.getUserRating(userId, courseId);
+        int result = 0;
+        if(existingRating == null){
+            result = courseMapper.insertUserRating(userId, courseId, rating);
+        }else{
+           result = courseMapper.updateUserRating(userId, courseId, rating);
+        }
+        Double newAverageRating = courseMapper.getAverageRating(courseId);
+        courseMapper.updateCourseRating(courseId, newAverageRating);
+        return result;
+    }
+
+
+
 }
 
 

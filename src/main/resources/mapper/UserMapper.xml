@@ -25,4 +25,22 @@
         insert into user(username,password)
         values(#{username},#{password})
     </insert>
+
+    <select id="countTotalUser" resultType="int">
+        SELECT COUNT(*) FROM user
+    </select>
+    <insert id="addCourseToFavorite" parameterType="map">
+        INSERT INTO Favorites (user_id, course_id)
+        VALUES (#{userId}, #{courseId})
+    </insert>
+    <update id="removeCourseFromFavorite" parameterType="map">
+        DELETE FROM Favorites
+        WHERE user_id = #{userId} AND course_id = #{courseId}
+    </update>
+    <select id = "selectFavoriteCoursesList" resultType="com.osrs.entity.Course">
+        SELECT c.*
+        FROM Course c
+        JOIN Favorites f ON c.id = f.course_id
+        WHERE f.user_id = #{userId}
+    </select>
 </mapper>

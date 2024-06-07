@@ -59,5 +59,31 @@ public class CourseController {
             return new JsonResponse(400, "failed", null);
         }
     }
+    @RequestMapping("/insert")
+    public JsonResponse insert(@RequestBody Course course){
+        int result = courseService.insertCourse(course);
+        if(result == 1){
+            return new JsonResponse(200, "success", null);
+        }else{
+            return new JsonResponse(400, "failed", null);
+        }
+    }
+    @RequestMapping("/total")
+    public JsonResponse total(){
+        int totalCourse = courseService.countTotalCourse();
+
+        return new JsonResponse(200, "success", totalCourse);
+    }
+
+    @RequestMapping("/rating")
+    public JsonResponse rating(@RequestParam Integer userId, @RequestParam Integer courseId, @RequestParam Double rating){
+        int result = courseService.RateCourse(userId, courseId, rating);
+        if(result == 1){
+            return new JsonResponse(200, "Rating success", result);
+        }else{
+            return new JsonResponse(400, "Rating failed", result);
+        }
+    }
+
 
 }

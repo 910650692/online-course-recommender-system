@@ -47,8 +47,39 @@
         DELETE FROM course
         WHERE id = #{id}
     </delete>
-<insert id="insertCourse" parameterType="com.osrs.entity.Course">
+    <insert id="insertCourse" parameterType="com.osrs.entity.Course">
         INSERT INTO course (CourseName, University, DifficultyLevel, CourseRating, CourseURL, CourseDescription, Skills)
         VALUES (#{courseName}, #{university}, #{difficultyLevel}, #{courseRating}, #{courseUrl}, #{courseDescription}, #{skills})
     </insert>
+    <select id="countTotalCourse"  resultType="int">
+        SELECT COUNT(*) FROM course
+    </select>
+    <select id="getAverageRating" resultType="java.lang.Double">
+        SELECT AVG(CAST(rating AS DECIMAL(10,2)))
+        FROM (
+                 SELECT rating FROM Ratings WHERE course_id = #{courseId}
+                 UNION ALL
+                 SELECT CourseRating FROM Course WHERE id = #{courseId}
+             ) AS AllRatings
+    </select>
+    <update id="updateCourseRating" parameterType="map">
+        UPDATE Course
+        SET CourseRating = #{rating}
+        WHERE id = #{courseId}
+    </update>
+    <update id="updateUserRating" parameterType = "map">
+        UPDATE Ratings
+        SET rating = #{rating}
+        WHERE user_id = #{userId} AND course_id = #{courseId}
+    </update>
+    <insert id="insertUserRating" parameterType="map">
+        INSERT INTO Ratings (user_id, course_id, rating)
+        VALUES (#{userId}, #{courseId}, #{rating})
+    </insert>
+
+    <select id = "getUserRating" resultType = "java.lang.Double">
+        SELECT rating FROM Ratings WHERE user_id = #{userId} AND course_id = #{courseId}
+    </select>
+
+
 </mapper>

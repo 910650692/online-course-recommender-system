@@ -18,4 +18,18 @@ public interface CourseService{
 
     int updateCourse(Course course);
     int deleteCourse(Integer id);
+    int insertCourse(Course course);
+    int countTotalCourse();
+
+    Double getAverageRating(Integer courseId);
+
+    int RateCourse(Integer userId, Integer courseId,Double rating);
+
+    int insertUserRating(Integer userId,Integer courseId, Double rating);
+
+    int updateUserRating(Integer userId,Integer courseId, Double rating);
+    Double getUserRating(Integer userId, Integer courseId);
+
+
+
 }
